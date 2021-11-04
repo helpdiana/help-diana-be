@@ -39,4 +39,7 @@ public class Image {
         this.imageSize = imageSize;
         this.imagePath = imagePath;
     }
+    public Image(){
+
+    }
 }

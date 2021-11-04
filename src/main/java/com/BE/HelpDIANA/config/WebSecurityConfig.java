@@ -59,6 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/auth/**",
                         "/api/diagnose/add",
                         "/api/diagnose/addbase",
+                        "/api/diagnose/my",
+                        "/api/diagnose/ocr",
+                        "/api/diagnose//highlight",
                         "/api/diagnose/upload",
                         "/api/uploadFile").permitAll().
                 // all other requests need to be authenticated

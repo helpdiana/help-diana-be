@@ -22,6 +22,8 @@ public class DiagnoseController {
     @Autowired
     private ImageRepository imageRepository;
     @Autowired
+    DiagnoseService diagnoseService;
+    @Autowired
     private ImageHandler imageHandler;
 
     //진단서 생성
@@ -48,6 +50,8 @@ public class DiagnoseController {
         // 파일이 존재할 때에만 처리
         else {
             List<Image> ImageList = imageHandler.parseFileInfo(diagnose, files);
+            List<List> af = new ArrayList<>();
+            List<List> bf = new ArrayList<>();
             for (Image photo : ImageList) {
                 // 파일을 폴더에 저장
                 diagnose.addImage(imageRepository.save(photo));
@@ -57,10 +61,15 @@ public class DiagnoseController {
             for (Image photo : ImageList) {
                 // photo 마다 trans af bf 저장
                 TranslateService.photoOfTrans(photo);
-                diagnose.addBf(photo.getTranslate_bf());
-                diagnose.addAf(photo.getTranslate_af());
+                af.add(photo.getTranslate_af());
+                bf.add(photo.getTranslate_bf());
+                //diagnose.addAf(photo.getTranslate_af());
             }
+            diagnose.setDiagnose_af(af.toString());
+            diagnose.setDiagnose_bf(bf.toString());
         }
+
+        diagnoseRepository.save(diagnose);
         return new ResponseEntity(diagnose, HttpStatus.OK);
 
 
@@ -121,62 +130,72 @@ public class DiagnoseController {
             }
         }
         TranslateService.translatePythonExe(diagnose.getFilePath()); // python 실행
+        List<List> af = new ArrayList<>();
+        List<List> bf = new ArrayList<>();
         for (Image photo : diagnose.getImg()) {
             // photo 마다 trans af bf 저장
             TranslateService.photoOfTrans(photo);
-            diagnose.addBf(photo.getTranslate_bf());
-            diagnose.addAf(photo.getTranslate_af());
+            af.add(photo.getTranslate_af());
+            bf.add(photo.getTranslate_bf());
+            //diagnose.addBf(photo.getTranslate_bf());
+            //diagnose.addAf(photo.getTranslate_af());
         }
 
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
 
-
-
-
-
-
-
     //진단서 조회 ocr
-    @GetMapping("/ocr/{diagnose_id}")
-    public ResponseEntity<List<String>> ocr_receive(Long diagnose_id) {
-        String email = "qhrud15@gmail.com";
-        List<String> lists = new ArrayList<>();
+    @GetMapping("/ocr")
+    public ResponseEntity<Map<String, Object>> ocr_receive(Long diagnose_id) {
+        String email = "email";
+
         Optional<Diagnose> diagnose = diagnoseRepository.findById(diagnose_id);
         Diagnose ocrDiagnose = diagnose.get();
+        Map<String, String> map = new HashMap<String, String>();
         if(ocrDiagnose.getEmail().equals(email)){ //본인 진단서만 조회가능
-            for (int i=0;i<ocrDiagnose.getImg().size();i++){
-                lists.addAll(ocrDiagnose.getImg().get(i).getTranslate_bf());
-            }
+            String listB = ocrDiagnose.getDiagnose_bf();
+
+            map.put("translate_bf", listB);
         }
-        return new ResponseEntity(lists, HttpStatus.OK);
+        return new ResponseEntity(map, HttpStatus.OK);
     }
 
     //진단서 조회 변환 후 (bf af 다보내줄거임.)
-    @GetMapping("/highlight/{diagnose_id}")
+    @GetMapping("/highlight")
     public ResponseEntity<Map<String, Object>> highlight_receive(Long diagnose_id) {
-        String email = "qhrud15@gmail.com";
-        List<String> listA = new ArrayList<>();
-        List<String> listB = new ArrayList<>();
+        String email = "email";
+        String listA = null;
+        String listB = null;
         Optional<Diagnose> diagnose = diagnoseRepository.findById(diagnose_id);
         Diagnose ocrDiagnose = diagnose.get();
         if(ocrDiagnose.getEmail().equals(email)){ //본인 진단서만 조회가능
-            for (int i=0;i<ocrDiagnose.getImg().size();i++){
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            listA = ocrDiagnose.getDiagnose_af();
+            listB = ocrDiagnose.getDiagnose_bf();
+
+            map.put("translate_af", listA);
+            map.put("translate_bf", listB);
+            System.out.println("exsit");
+            return new ResponseEntity(map, HttpStatus.OK);
+
+            /*for (int i=0;i<ocrDiagnose.getImg().size();i++){
                 listA.addAll(ocrDiagnose.getImg().get(i).getTranslate_af());
                 listB.addAll(ocrDiagnose.getImg().get(i).getTranslate_bf());
-            }
+            }*/
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, String> map = new HashMap<String, String>();
         map.put("translate_af", listA);
         map.put("translate_bf", listB);
         return new ResponseEntity(map, HttpStatus.OK);
     }
 
     //나의 진단서 조회
-    @GetMapping({"/diagnose"})
+    @GetMapping({"/my"})
     public ResponseEntity<List<Diagnose>> receive() {
-        String email = "qhrud15@gmail.com";
-        List<Diagnose> diagnoses = DiagnoseService.myDiagnoses(email);
+        String email = "email";
+        //List<Diagnose> diagnoses = diagnoseService.myDiagnoses(email);
+        List<Diagnose> diagnoses = diagnoseRepository.findByEmail(email);
         return new ResponseEntity(diagnoses, HttpStatus.OK);
     }
 }

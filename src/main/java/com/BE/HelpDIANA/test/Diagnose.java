@@ -32,37 +32,34 @@ public class Diagnose {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.sql.Date date;
 
-    @Transient
-    private List<List> bf = new ArrayList<>();
+    @Column(nullable = true)
+    private String diagnose_bf;
 
-    @Transient
-    private List<List> af = new ArrayList<>();
+    @Column(nullable = true)
+    private String diagnose_af;
 
-    public List<List> getBf() {
-        return bf;
+    public String getDiagnose_bf() {
+        return diagnose_bf;
     }
 
-    public void setBf(List<List> bf) {
-        this.bf = bf;
+    public void setDiagnose_bf(String diagnose_bf) {
+        this.diagnose_bf = diagnose_bf;
     }
 
-    public List<List> getAf() {
-        return af;
+    public String getDiagnose_af() {
+        return diagnose_af;
     }
 
-    public void setAf(List<List> af) {
-        this.af = af;
-    }
-
-    public void addBf(List bf) {
-        this.bf.add(bf);
-    }
-    public void addAf(List af) {
-        this.af.add(af);
+    public void setDiagnose_af(String diagnose_af) {
+        this.diagnose_af = diagnose_af;
     }
 
     @Transient
     private List<Image> img = new ArrayList();
+
+    public Diagnose(){
+
+    }
 
     public Diagnose(String email, String name, Date date) {
         this.email = email;
