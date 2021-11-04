@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.File;
 import java.util.Collection;
 
 
@@ -22,6 +23,13 @@ public class User implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+        String path = "/home/ubuntu/develop/" + email;
+        File newer = new File(path);
+        if (newer.mkdirs()) {
+            System.out.println("유저 디렉토리 생성 성공");
+        } else {
+            System.out.println("유저 디렉토리 생성 실패");
+        }
     }
 
     public String getName() {
