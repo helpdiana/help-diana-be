@@ -1,5 +1,6 @@
 package com.BE.HelpDIANA.test;
 
+import com.BE.HelpDIANA.config.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +26,19 @@ public class DiagnoseController {
     DiagnoseService diagnoseService;
     @Autowired
     private ImageHandler imageHandler;
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     //진단서 생성
     @PostMapping({"/add"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity create(@RequestPart(value="files", required=false) List<MultipartFile> files,
-                                 String name, String date) throws Exception {
-        String email = "email";
-        DiagnoseForm form = new DiagnoseForm(email,name, Date.valueOf(date));
+                                 String name, String date,  @RequestHeader("Authorization") String token) throws Exception {
+
+        token = token.substring(7);
+        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+
+        DiagnoseForm form = new DiagnoseForm(tokenOwner,name, Date.valueOf(date.toString()));
 
         // 파일 처리를 위한 Diagnose 객체 생성
         Diagnose diagnose = new Diagnose(form.getEmail(), form.getName(), form.getDate());
@@ -146,8 +152,10 @@ public class DiagnoseController {
 
     //진단서 조회 ocr
     @GetMapping("/ocr")
-    public ResponseEntity<Map<String, Object>> ocr_receive(Long diagnose_id) {
-        String email = "email";
+    public ResponseEntity<Map<String, Object>> ocr_receive(Long diagnose_id, @RequestHeader("Authorization") String token) {
+        token = token.substring(7);
+        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String email = tokenOwner;
 
         Optional<Diagnose> diagnose = diagnoseRepository.findById(diagnose_id);
         Diagnose ocrDiagnose = diagnose.get();
@@ -160,10 +168,34 @@ public class DiagnoseController {
         return new ResponseEntity(map, HttpStatus.OK);
     }
 
+    @PostMapping({"/ocr/update"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity ocr_update(Long diagnose_id,String name, String date, String diagnose_bf,  @RequestHeader("Authorization") String token) throws Exception{
+        token = token.substring(7);
+        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String email = tokenOwner;
+
+        //진단서를 찾는다
+
+        //진단서의 주인과 token이 같은사람인지 확인
+
+        // 파일 json에 리스트 대치.
+        //
+        //진단서의 bf리스트, name, date를 update repository.save()
+
+
+
+
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
+
     //진단서 조회 변환 후 (bf af 다보내줄거임.)
     @GetMapping("/highlight")
-    public ResponseEntity<Map<String, Object>> highlight_receive(Long diagnose_id) {
-        String email = "email";
+    public ResponseEntity<Map<String, Object>> highlight_receive(Long diagnose_id, @RequestHeader("Authorization") String token) {
+        token = token.substring(7);
+        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String email = tokenOwner;
+
         String listA = null;
         String listB = null;
         Optional<Diagnose> diagnose = diagnoseRepository.findById(diagnose_id);
