@@ -1,16 +1,17 @@
 package com.BE.HelpDIANA.test;
 
 import com.BE.HelpDIANA.config.JwtTokenUtil;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Date;
+import java.text.ParseException;
 import java.util.*;
 
 @CrossOrigin
@@ -68,8 +69,19 @@ public class DiagnoseControllerTest {
             diagnose.setDiagnose_bf(bf.toString());
         }
 
-        //++ocr_total.json file 생성 후 저장
+        //ocr_total.json file 생성 후 저장
+        JSONObject obj = new JSONObject();
+        obj.put("diagnose_total_bf", diagnose.getDiagnose_bf());
 
+        try {
+            FileWriter file = new FileWriter("/Users/kimbokyeong/Desktop/develop/"+diagnose.getEmail()+"/"
+            +diagnose.getCreated()+"/ocr_total.json");
+            file.write(obj.toJSONString());
+            file.flush();
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         diagnoseRepository.save(diagnose);
         return new ResponseEntity(diagnose, HttpStatus.OK);
@@ -103,7 +115,19 @@ public class DiagnoseControllerTest {
         diagnose.setDate(Date.valueOf(date));
         diagnose.setDiagnose_bf(diagnose_bf);
 
-        //++json file에 update.
+        //json file에 update.
+        JSONObject obj = new JSONObject();
+        obj.put("diagnose_total_bf", diagnose_bf);
+
+        try {
+            FileWriter file = new FileWriter("/Users/kimbokyeong/Desktop/develop/"+diagnose.getEmail()+"/"
+                    +diagnose.getCreated()+"/ocr_total.json");
+            file.write(obj.toJSONString());
+            file.flush();
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         diagnoseRepository.save(diagnose);
         return new ResponseEntity(diagnose, HttpStatus.OK);
@@ -121,6 +145,24 @@ public class DiagnoseControllerTest {
         TranslateService.translatePythonExe(diagnose.getFilePath());
 
         //++생성된 json 파일을 읽어 diagnose af에 string으로 저장.
+        JSONParser parse = new JSONParser();
+
+
+        ////////++++여기서 key 값이랑 value 값 설정해서 다시 넣어야함.
+        try {
+            FileReader reader = new FileReader("/User/kimbokyeong/Desktop/develop"+diagnose.getEmail()
+                    +diagnose.getCreated()+"/trans_ocr_total.json");
+            Object obj = parse.parse(reader);
+            JSONObject jsonObject = (JSONObject) obj;
+
+            reader.close();
+
+            System.out.print(jsonObject);
+            diagnose.setDiagnose_af(jsonObject.toString());
+
+        } catch (IOException | org.json.simple.parser.ParseException e) {
+            e.printStackTrace();
+        }
 
         diagnoseRepository.save(diagnose);
         return new ResponseEntity(diagnose, HttpStatus.OK);
@@ -136,6 +178,19 @@ public class DiagnoseControllerTest {
         Diagnose diagnose = resultDiagnose.get();
 
         //++생성된 json 파일을 읽어 diagnose af에 string으로 update.
+        //++json file에 update.
+        JSONObject obj = new JSONObject();
+        obj.put("diagnose_total_af", diagnose_af);
+
+        try {
+            FileWriter file = new FileWriter("/Users/kimbokyeong/Desktop/develop/"+diagnose.getEmail()+"/"
+                    +diagnose.getCreated()+"/trans_ocr_total.json");
+            file.write(obj.toJSONString());
+            file.flush();
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         diagnose.setDiagnose_af(diagnose_af);
 

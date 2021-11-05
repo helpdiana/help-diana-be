@@ -86,7 +86,6 @@ public class TranslateService extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         //translation bf json 리스트 리턴
     }
     public static void imageOfOcr(Image photo){
