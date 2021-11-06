@@ -16,7 +16,7 @@ public class TranslateService extends Thread {
         try {
             System.out.println(path);
             Thread.sleep(100);
-            String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/ocr_v2.py"+" "+path);
+            String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/ocr_v3.py"+" "+path);
             Thread.sleep(1000);
             String result = cmd.execCommand(commmand);
             System.out.println(result);

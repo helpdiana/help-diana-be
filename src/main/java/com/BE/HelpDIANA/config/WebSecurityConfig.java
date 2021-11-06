@@ -72,6 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/diagnoseTest/delete",
                         "/api/diagnose/addbase",
                         "/api/diagnose/my",
+                        "/api/diagnoseTest/highlight",
                         "/api/diagnose/ocr",
                         "/api/diagnose//highlight",
                         "/api/diagnose/upload",
