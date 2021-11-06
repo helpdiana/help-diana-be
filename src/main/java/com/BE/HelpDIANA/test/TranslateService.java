@@ -16,7 +16,7 @@ public class TranslateService extends Thread {
         try {
             System.out.println(path);
             Thread.sleep(100);
-            String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/ocr.py"+" "+path+" "+path);
+            String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/ocr_v2.py"+" "+path);
             Thread.sleep(1000);
             String result = cmd.execCommand(commmand);
             System.out.println(result);
@@ -27,17 +27,12 @@ public class TranslateService extends Thread {
     }
 
     public static void translatePythonExe(String path){
-        //진단서의 path를 python으로 넘기는 함수
-        //PythonInterpreter interpreter = new PythonInterpreter();
-        //interpreter.execfile("/Users/kimbokyeong/Desktop/develop/ocr_trans.py"); //py파일 실행
-        //interpreter.exec("print(addition(7,8))"+path); //수정 path인자 넣어서 python 호출
-
         Cmd cmd = new Cmd();
         try {
             System.out.println(path);
             Thread.sleep(100);
-            String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/trans.py"+" "+path+" "+path);
-            //파일 위치랑 저장할 위치 보내야함.
+            System.out.println(path+"/ocr_total.json");
+            String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/trans_v3.py"+" "+path+" "+"ocr_total.json");
             Thread.sleep(1000);
             String result = cmd.execCommand(commmand);
 
@@ -46,10 +41,7 @@ public class TranslateService extends Thread {
         } catch (Exception e) {
 
             System.out.println("error");
-
         }
-
-
 
     }
     public static void photoOfTrans(Image photo){

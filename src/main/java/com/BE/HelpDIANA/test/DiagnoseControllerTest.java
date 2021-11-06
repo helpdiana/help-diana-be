@@ -34,11 +34,11 @@ public class DiagnoseControllerTest {
     @PostMapping({"/add"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity create(@RequestPart(value="files", required=false) List<MultipartFile> files,
-                                 String name, String date,  @RequestHeader("Authorization") String token) throws Exception {
+                                 String name, String date) throws Exception {
 
-        token = token.substring(7);
-        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
-
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
         // 파일 처리를 위한 Diagnose 객체 생성
         Diagnose diagnose = new Diagnose(tokenOwner, name, Date.valueOf(date));
         diagnose.setFilePath(tokenOwner);
@@ -71,7 +71,8 @@ public class DiagnoseControllerTest {
 
         //ocr_total.json file 생성 후 저장
         JSONObject obj = new JSONObject();
-        obj.put("diagnose_total_bf", diagnose.getDiagnose_bf());
+        obj.put("diagnose_bf", diagnose.getDiagnose_bf());
+        System.out.println("print"+diagnose.getDiagnose_bf());
 
         try {
             FileWriter file = new FileWriter("/Users/kimbokyeong/Desktop/develop/"+diagnose.getEmail()+"/"
@@ -89,35 +90,44 @@ public class DiagnoseControllerTest {
 
     @GetMapping({"/add"})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity createToOcr(Long diagnose_id, @RequestHeader("Authorization") String token){
+    public ResponseEntity createToOcr(Long diagnose_id){
 
-        token = token.substring(7);
-        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
 
         Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
         Diagnose diagnose = resultDiagnose.get();
-
-        return new ResponseEntity(diagnose.getDiagnose_bf(), HttpStatus.OK);
+        if(diagnose.getEmail().equals(tokenOwner)){
+            return new ResponseEntity(diagnose.getDiagnose_bf(), HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     //ocr update
     @PostMapping({"/ocr/update"})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity ocrUpdate(Long diagnose_id, String name, String date,String diagnose_bf, @RequestHeader("Authorization") String token) throws Exception {
+    public ResponseEntity ocrUpdate(Long diagnose_id, String name, String date,String diagnose_bf) throws Exception {
 
-        token = token.substring(7);
-        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
 
         Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
         Diagnose diagnose = resultDiagnose.get();
 
+        if(!diagnose.getEmail().equals(tokenOwner)){
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        }
         diagnose.setName(name);
         diagnose.setDate(Date.valueOf(date));
         diagnose.setDiagnose_bf(diagnose_bf);
 
         //json file에 update.
         JSONObject obj = new JSONObject();
-        obj.put("diagnose_total_bf", diagnose_bf);
+        obj.put("diagnose_bf", diagnose_bf);
 
         try {
             FileWriter file = new FileWriter("/Users/kimbokyeong/Desktop/develop/"+diagnose.getEmail()+"/"
@@ -134,12 +144,18 @@ public class DiagnoseControllerTest {
     }
     @GetMapping({"/translate"})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity ocrToTrans(Long diagnose_id, @RequestHeader("Authorization") String token){
-        token = token.substring(7);
-        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+    public ResponseEntity ocrToTrans(Long diagnose_id){
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
+
 
         Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
         Diagnose diagnose = resultDiagnose.get();
+
+        if(!diagnose.getEmail().equals(tokenOwner)){
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        }
 
         //diagnose_bf json 파일을 읽어 translate
         TranslateService.translatePythonExe(diagnose.getFilePath());
@@ -168,7 +184,7 @@ public class DiagnoseControllerTest {
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping({"/translate"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity transUpdate(Long diagnose_id, String diagnose_af, @RequestHeader("Authorization") String token){
         token = token.substring(7);
@@ -180,7 +196,7 @@ public class DiagnoseControllerTest {
         //++생성된 json 파일을 읽어 diagnose af에 string으로 update.
         //++json file에 update.
         JSONObject obj = new JSONObject();
-        obj.put("diagnose_total_af", diagnose_af);
+        obj.put("diagnose_af", diagnose_af);
 
         try {
             FileWriter file = new FileWriter("/Users/kimbokyeong/Desktop/develop/"+diagnose.getEmail()+"/"
@@ -196,6 +212,19 @@ public class DiagnoseControllerTest {
 
         diagnoseRepository.save(diagnose);
         return new ResponseEntity(diagnose, HttpStatus.OK);
+    }
+
+    @DeleteMapping({"/delete"})
+    public ResponseEntity deleteDiagnose(Long diagnose_id, @RequestHeader("Authorization") String token){
+        token = token.substring(7);
+        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+
+        Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        Diagnose diagnose = resultDiagnose.get();
+
+        diagnoseRepository.delete(diagnose);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
 
