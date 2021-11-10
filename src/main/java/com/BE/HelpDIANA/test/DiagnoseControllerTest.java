@@ -60,39 +60,12 @@ public class DiagnoseControllerTest {
             }
             System.out.println("파일 폴더, DB 저장 완료");
             TranslateService.ocrPythonExe(diagnose.getFilePath()); // ocr 하는 함수 실행.
-            /*for (Image photo : ImageList) {
-                // photo 마다 trans af bf 저장
-                TranslateService.imageOfOcr(photo);
-                bf.add(photo.getTranslate_bf());
-                //diagnose.addAf(photo.getTranslate_af());
-            }
-            diagnose.setDiagnose_bf(bf.toString());*/
         }
-
-        /*//ocr_total.json file 생성 후 저장
-        JSONObject obj = new JSONObject();
-        obj.put("diagnose_bf", diagnose.getDiagnose_bf());
-        System.out.println("print"+diagnose.getDiagnose_bf());
-
-
-        try {
-            FileWriter file = new FileWriter("/Users/kimbokyeong/Desktop/develop/"+diagnose.getEmail()+"/"
-            +diagnose.getCreated()+"/ocr_total.json");
-            file.write(obj.toJSONString());
-            file.flush();
-            file.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        //diagnoseRepository.save(diagnose);
-        //diagnose_bf json 파일을 읽어 translate
         TranslateService.translatePythonExe(diagnose.getFilePath());
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
 
-    @GetMapping({"/add"})
-    @ResponseStatus(HttpStatus.CREATED)
+    @GetMapping({"/ocr"})
     public ResponseEntity createToOcr(Long diagnose_id){
 
         //token = token.substring(7);
@@ -100,6 +73,9 @@ public class DiagnoseControllerTest {
         String tokenOwner = "email";
 
         Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        if(resultDiagnose.isEmpty()){
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        }
         Diagnose diagnose = resultDiagnose.get();
 
         if(diagnose.getEmail().equals(tokenOwner)){
@@ -118,25 +94,26 @@ public class DiagnoseControllerTest {
             return new ResponseEntity(jsonObject1, HttpStatus.OK);
         }
         else{
-            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
     }
 
     //ocr update
-    @PostMapping({"/ocr/update"})
-    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping({"/ocr/update"})
     public ResponseEntity ocrUpdate(Long diagnose_id, String name, String date,String newJson) throws Exception {
 
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
         String tokenOwner = "email";
-        System.out.println("dfsdaf");
 
         Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        if(resultDiagnose.isEmpty()){
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        }
         Diagnose diagnose = resultDiagnose.get();
 
         if(!diagnose.getEmail().equals(tokenOwner)){
-            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
         diagnose.setName(name);
         diagnose.setDate(Date.valueOf(date));
@@ -156,7 +133,6 @@ public class DiagnoseControllerTest {
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
     @GetMapping({"/translate"})
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity ocrToTrans(Long diagnose_id){
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
@@ -164,10 +140,15 @@ public class DiagnoseControllerTest {
         String tokenOwner = "email";
 
         Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+
+        System.out.println("tras");
+        if(resultDiagnose.isEmpty())
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+
         Diagnose diagnose = resultDiagnose.get();
 
         if(!diagnose.getEmail().equals(tokenOwner)){
-            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
 
         JSONParser parser = new JSONParser();
@@ -185,18 +166,20 @@ public class DiagnoseControllerTest {
 
     }
 
-    @PostMapping({"/translate/update"})
-    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping({"/translate/update"})
     public ResponseEntity transUpdate(Long diagnose_id, String newJson){
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
         String tokenOwner = "email";
 
         Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        if(resultDiagnose.isEmpty())
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+
         Diagnose diagnose = resultDiagnose.get();
 
         if(!diagnose.getEmail().equals(tokenOwner)){
-            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
         try {
 
@@ -221,10 +204,13 @@ public class DiagnoseControllerTest {
 
 
         Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        if(resultDiagnose.isEmpty())
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+
         Diagnose diagnose = resultDiagnose.get();
 
         if(!diagnose.getEmail().equals(tokenOwner)){
-            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
 
         System.out.println("진단서 삭제 완료");
@@ -240,10 +226,13 @@ public class DiagnoseControllerTest {
         String tokenOwner = "email";
 
         Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        if(resultDiagnose.isEmpty())
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+
         Diagnose diagnose = resultDiagnose.get();
 
         if(!diagnose.getEmail().equals(tokenOwner)){
-            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
 
         JSONParser parser = new JSONParser();
@@ -267,15 +256,5 @@ public class DiagnoseControllerTest {
 
         return new ResponseEntity(total ,HttpStatus.OK);
     }
-
-    /*public static JSONObject merge(JSONObject a, JSONObject b) {
-        JSONObject total = new JSONObject();
-            total.addProperty(a.getKey(), b.getValue());
-
-        for(Entry<String, JsonElement> entry: b.entrySet()){
-            total.add(entry.getKey(), entry.getValue());
-        }
-        return total;
-    }*/
 }
 

@@ -66,6 +66,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/auth/**",
                         "/api/diagnose/add",
                         "/api/diagnoseTest/add",
+                        "/api/diagnoseTest/ocr",
+                        "/api/diagnoseTest/ocr?diagnose_id=18",
+                        "/api/diagnoseTest/ocr/{diagnose_id}",
+                        "/api/diagnoseTest/ocr/update/{diagnose_id}",
+                        "/api/diagnoseTest/translate/{diagnose_id}",
+                        "/api/diagnoseTest/translate/update/{diagnose_id}",
                         "/api/diagnoseTest/ocr/update",
                         "/api/diagnoseTest/translate",
                         "/api/diagnoseTest/translate/update",
@@ -76,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/diagnose/ocr",
                         "/api/diagnose//highlight",
                         "/api/diagnose/upload",
+                        "/api/reserve/add/clinic",
                         "/api/uploadFile").permitAll().
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().
