@@ -91,17 +91,6 @@ public class DiagnoseService {
         });
         return diagnoses;
     }
-
-    public List<Diagnose> findByTag(String email) {
-        List<Diagnose> roadmaps = new ArrayList();
-        diagnoseRepository.findOrderByName(email).forEach((e) -> {
-            roadmaps.add(e);
-        });
-        return roadmaps;
-    }
-
-
-
     public Diagnose deleteDiagnose(int diagnoseId) {
         Long roadmapId = (long)diagnoseId;
         Optional<Diagnose> delRoadmap = diagnoseRepository.findById(roadmapId);

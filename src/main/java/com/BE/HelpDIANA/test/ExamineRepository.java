@@ -14,8 +14,6 @@ public interface ExamineRepository extends JpaRepository<Examine, Long> {
 
     public List<Examine> findOrderByDate(String email);
 
-    public List<Examine> findOrderByName(String email);
-
     public List<Examine> findByEmailAndDate(String email, Date date);
 
 }

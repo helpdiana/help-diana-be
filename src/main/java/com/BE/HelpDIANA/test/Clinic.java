@@ -29,9 +29,6 @@ public class Clinic {
     private java.sql.Date date;
 
     @Column(nullable = true)
-    private String memo;
-
-    @Column(nullable = true)
     private java.sql.Time startTime;
 
     @Column(nullable = true)
@@ -84,13 +81,4 @@ public class Clinic {
     public void setDate(Date date) {
         this.date = date;
     }
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
 }
