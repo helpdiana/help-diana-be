@@ -213,8 +213,25 @@ public class DiagnoseControllerTest {
             return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
 
-        System.out.println("진단서 삭제 완료");
         diagnoseRepository.delete(diagnose);
+
+        //folder delete
+        System.out.println(diagnose.getFilePath()+" 삭제");
+        File deleteFolder = new File(diagnose.getFilePath());
+
+        if(deleteFolder.exists()){
+            File[] deleteFolderList = deleteFolder.listFiles();
+
+            for (int j = 0; j < deleteFolderList.length; j++) {
+                deleteFolderList[j].delete();
+                System.out.println("bobo");
+            }
+
+            if(deleteFolder.isDirectory()){
+                System.out.println("폴더 삭제");
+                deleteFolder.delete();
+            }
+        }
 
         return new ResponseEntity(HttpStatus.OK);
     }
