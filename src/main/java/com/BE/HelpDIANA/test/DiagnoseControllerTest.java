@@ -65,7 +65,7 @@ public class DiagnoseControllerTest {
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
 
-    @GetMapping({"/ocr"})
+    @GetMapping(value = "/ocr")
     public ResponseEntity createToOcr(Long diagnose_id){
 
         //token = token.substring(7);
@@ -99,7 +99,7 @@ public class DiagnoseControllerTest {
     }
 
     //ocr update
-    @PutMapping({"/ocr/update"})
+    @PutMapping(value = "/ocr/update")
     public ResponseEntity ocrUpdate(Long diagnose_id, String name, String date,String newJson) throws Exception {
 
         //token = token.substring(7);
@@ -132,7 +132,7 @@ public class DiagnoseControllerTest {
         diagnoseRepository.save(diagnose);
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
-    @GetMapping({"/translate"})
+    @GetMapping(value = "/translate")
     public ResponseEntity ocrToTrans(Long diagnose_id){
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
@@ -166,7 +166,7 @@ public class DiagnoseControllerTest {
 
     }
 
-    @PutMapping({"/translate/update"})
+    @PutMapping(value = "/translate/update")
     public ResponseEntity transUpdate(Long diagnose_id, String newJson){
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
@@ -196,7 +196,7 @@ public class DiagnoseControllerTest {
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
 
-    @DeleteMapping({"/delete"})
+    @DeleteMapping(value = "/delete")
     public ResponseEntity deleteDiagnose(Long diagnose_id){
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);

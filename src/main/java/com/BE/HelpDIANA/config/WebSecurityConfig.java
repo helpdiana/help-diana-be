@@ -64,6 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/",
                         "/api/auth/**",
+                        "/api/main/home",
                         "/api/diagnose/add",
                         "/api/diagnoseTest/add",
                         "/api/diagnoseTest/ocr",
@@ -83,6 +84,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/diagnose//highlight",
                         "/api/diagnose/upload",
                         "/api/reserve/add/clinic",
+                        "/api/reserve/add/examine",
+                        "/api/reserve/clinic",
+                        "/api/reserve/examine",
+                        "/api/reserve/update/clinic",
+                        "/api/reserve/update/examine",
+                        "/api/reserve/delete/clinic",
+                        "/api/reserve/delete/examine",
+                        "/api/myPage",
                         "/api/uploadFile").permitAll().
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().

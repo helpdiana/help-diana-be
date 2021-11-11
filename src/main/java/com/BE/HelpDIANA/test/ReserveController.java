@@ -1,5 +1,6 @@
 package com.BE.HelpDIANA.test;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,11 @@ public class ReserveController {
     @Autowired
     private ExamineRepository examineRepository;
 
+    @Autowired
+    private DiagnoseRepository diagnoseRepository;
 
-    @PostMapping({"/add/clinic"})
+
+    @PostMapping(value = "/add/clinic")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity createClinic(String name, String date, String start, String end, String memo) {
         //token = token.substring(7);
@@ -46,30 +50,31 @@ public class ReserveController {
         return new ResponseEntity(clinic, HttpStatus.OK);
     }
 
-    @PostMapping({"/add/examine"})
+    @PostMapping(value = "/add/examine")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity createExamine(String name, String date, String start, String end, String memo) {
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
         String tokenOwner = "email";
+        System.out.println("examine 생성");
 
-        Clinic clinic = new Clinic();
+        Examine examine = new Examine();
 
-        clinic.setEmail(tokenOwner);
-        clinic.setName(name);
-        clinic.setDate(Date.valueOf(date));
-        clinic.setStartTime(Time.valueOf(start));
-        clinic.setEndTime(Time.valueOf(end));
-        clinic.setMemo(memo);
+        examine.setEmail(tokenOwner);
+        examine.setName(name);
+        examine.setDate(Date.valueOf(date));
+        examine.setStartTime(Time.valueOf(start));
+        examine.setEndTime(Time.valueOf(end));
+        examine.setMemo(memo);
         System.out.println(name + date + start);
 
-        clinicRepository.save(clinic);
+        examineRepository.save(examine);
 
-        return new ResponseEntity(clinic, HttpStatus.OK);
+        return new ResponseEntity(examine, HttpStatus.OK);
     }
 
-    @GetMapping({"{/clinic_id}"})
-    public ResponseEntity<List<Clinic>> receiveClinic(@PathVariable("clinic_id") Long id) {
+    @GetMapping(value = "/clinic")
+    public ResponseEntity<List<Clinic>> receiveClinic(Long id) {
 
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
@@ -90,8 +95,30 @@ public class ReserveController {
         return new ResponseEntity(clinic, HttpStatus.OK);
     }
 
-    @PutMapping({"update/{clinic_id}"})
-    public ResponseEntity updateClinic(@PathVariable("clinic_id") Long id, String name, String date, String start, String end, String memo) {
+    @GetMapping(value = "/examine")
+    public ResponseEntity<List<Examine>> receiveExamine(Long id) {
+
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
+
+        Optional<Examine> examineOne = examineRepository.findById(id);
+
+        Examine examine = examineOne.get();
+
+        if (examine == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        if (!examine.getEmail().equals(tokenOwner)) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+        return new ResponseEntity(examine, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/update/clinic")
+    public ResponseEntity updateClinic(Long id, String name, String date, String start, String end, String memo) {
 
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
@@ -120,8 +147,38 @@ public class ReserveController {
         return new ResponseEntity<Clinic>(clinic, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete/{clinic_id}")
-    public ResponseEntity<Clinic> deleteRoadmap(@PathVariable("clinic_id") Long id) {
+    @PutMapping(value = "/update/examine")
+    public ResponseEntity updateExamine(Long id, String name, String date, String start, String end, String memo) {
+
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
+
+        Optional<Examine> oneExamine = examineRepository.findById(id);
+
+        if (!oneExamine.isPresent()) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        Examine examine = oneExamine.get();
+
+        if (!(examine.getEmail().equals(tokenOwner))) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+        examine.setName(name);
+        examine.setDate(Date.valueOf(date));
+        examine.setStartTime(Time.valueOf(start));
+        examine.setEndTime(Time.valueOf(end));
+        examine.setMemo(memo);
+
+        examineRepository.save(examine);
+
+        return new ResponseEntity<Examine>(examine, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/delete/clinic")
+    public ResponseEntity<Clinic> deleteClinic(Long id) {
 
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
@@ -143,4 +200,29 @@ public class ReserveController {
 
         return new ResponseEntity<Clinic>(clinic, HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/delete/examine")
+    public ResponseEntity<Examine> deleteExamine(Long id) {
+
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
+
+        Optional<Examine> examineOne = examineRepository.findById(id);
+
+        Examine examine = examineOne.get();
+
+        if (examine == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        if (!examine.getEmail().equals(tokenOwner)) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+        examineRepository.delete(examine);
+
+        return new ResponseEntity<Examine>(examine, HttpStatus.OK);
+    }
+
 }
