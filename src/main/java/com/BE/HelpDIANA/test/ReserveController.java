@@ -27,7 +27,6 @@ public class ReserveController {
     @Autowired
     private DiagnoseRepository diagnoseRepository;
 
-
     @PostMapping(value = "/add/clinic")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity createClinic(String name, String date, String start, String end, String memo) {

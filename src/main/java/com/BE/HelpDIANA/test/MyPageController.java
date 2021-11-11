@@ -24,7 +24,7 @@ public class MyPageController {
     @Autowired
     private DiagnoseRepository diagnoseRepository;
 
-    @GetMapping({""})
+    @GetMapping(value = "")
     public ResponseEntity myPage(String date){
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
