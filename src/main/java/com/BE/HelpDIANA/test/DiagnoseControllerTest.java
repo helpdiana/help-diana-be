@@ -273,5 +273,28 @@ public class DiagnoseControllerTest {
 
         return new ResponseEntity(total ,HttpStatus.OK);
     }
+
+    @PostMapping("/request")
+    public ResponseEntity diagnose_request(Long diagnose_id){
+
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
+
+        Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        if(resultDiagnose.isEmpty())
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+
+        Diagnose diagnose = resultDiagnose.get();
+
+        if(!diagnose.getEmail().equals(tokenOwner)){
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
+        }
+
+        diagnose.setRequest(true);
+
+        diagnoseRepository.save(diagnose);
+        return new ResponseEntity(diagnose, HttpStatus.OK);
+    }
 }
 

@@ -38,6 +38,17 @@ public class Diagnose {
     @Column(nullable = true)
     private String diagnose_af;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean request;
+
+    public boolean isRequest() {
+        return request;
+    }
+
+    public void setRequest(boolean request) {
+        this.request = request;
+    }
+
     public String getDiagnose_bf() {
         return diagnose_bf;
     }

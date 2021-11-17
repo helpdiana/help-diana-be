@@ -68,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/diagnose/add",
                         "/api/diagnoseTest/add",
                         "/api/diagnoseTest/ocr",
+                        "/api/diagnoseTest/request",
                         "/api/diagnoseTest/ocr?diagnose_id=18",
                         "/api/diagnoseTest/ocr/{diagnose_id}",
                         "/api/diagnoseTest/ocr/update/{diagnose_id}",

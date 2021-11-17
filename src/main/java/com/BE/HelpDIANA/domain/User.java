@@ -3,6 +3,7 @@ package com.BE.HelpDIANA.domain;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.File;
@@ -16,6 +17,17 @@ public class User implements UserDetails {
     private String email;
 
     private String name;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean doctor;
+
+    public boolean isDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(boolean doctor) {
+        this.doctor = doctor;
+    }
 
     public String getEmail() {
         return email;
