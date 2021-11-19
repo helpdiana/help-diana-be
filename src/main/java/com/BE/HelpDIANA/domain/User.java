@@ -21,6 +21,14 @@ public class User implements UserDetails {
     @Column(columnDefinition = "boolean default false")
     private boolean doctor;
 
+    public User(){}
+
+    public User(String email, String name, boolean doctor) {
+        this.email = email;
+        this.name = name;
+        this.doctor = doctor;
+    }
+
     public boolean isDoctor() {
         return doctor;
     }

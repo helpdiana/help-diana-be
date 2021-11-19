@@ -64,6 +64,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/",
                         "/api/auth/**",
+                        "/api/user/update",
+                        "/api/user",
                         "/api/main/home",
                         "/api/diagnose/add",
                         "/api/diagnoseTest/add",

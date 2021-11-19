@@ -274,7 +274,7 @@ public class DiagnoseControllerTest {
         return new ResponseEntity(total ,HttpStatus.OK);
     }
 
-    @PostMapping("/request")
+    @PostMapping(value = "/request")
     public ResponseEntity diagnose_request(Long diagnose_id){
 
         //token = token.substring(7);

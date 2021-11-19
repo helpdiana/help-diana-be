@@ -41,6 +41,9 @@ public class Diagnose {
     @Column(columnDefinition = "boolean default false")
     private boolean request;
 
+    @Column(nullable = true)
+    private String doctor;
+
     public boolean isRequest() {
         return request;
     }

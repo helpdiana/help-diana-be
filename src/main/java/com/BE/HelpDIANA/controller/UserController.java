@@ -46,11 +46,11 @@ public class UserController {
         }
     }
 
-    @GetMapping(value="/")
-    public ResponseEntity<User> getInfo(@RequestHeader("Authorization") String token) {
-
-        token = token.substring(7);
-        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+    @GetMapping(value="")
+    public ResponseEntity<User> getInfo() {
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
         Optional<User> findUser = jpaUserService.findByEmail(tokenOwner);
 
         if (findUser.isPresent()) {
@@ -62,25 +62,27 @@ public class UserController {
 
     }
 
-    @PutMapping(value="/{user_email}")
-    public ResponseEntity<User> saveInfo(@PathVariable("user_email")String email, User user,
-                                         @RequestHeader("Authorization") String token) {
+    @PutMapping(value="/update")
+    public ResponseEntity<User> updateInfo(String email, String name, boolean doctor) {
 
-        token = token.substring(7);
-        String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
-        Optional<User> findUser = jpaUserService.findByEmail(email);
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
 
         if (!(tokenOwner.equals(email))) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
 
-        User updateUser = jpaUserService.update(email, user);
+        User user = new User(tokenOwner, name, doctor);
+        System.out.println(doctor);
+
+        User updateUser = jpaUserService.update(tokenOwner, user);
 
         if (updateUser != null) {
-            return new ResponseEntity<User>(updateUser, HttpStatus.OK);
+            return new ResponseEntity(updateUser, HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
         }
     }
 

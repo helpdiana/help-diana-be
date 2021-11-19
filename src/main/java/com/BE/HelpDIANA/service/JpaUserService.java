@@ -29,7 +29,9 @@ public class JpaUserService {
         Optional<User> dbUser = userRepository.findByEmail(email);
 
         if (dbUser.isPresent()) {
-            userRepository.save(dbUser.get());
+            //System.out.println("이건 db update 전: "+ dbUser.get().isDoctor());
+            userRepository.save(user);
+            //System.out.println("user 의 정보 : "+user.isDoctor()+"db user update "+dbUser.get().isDoctor());
             return dbUser.get();
         }
         else {
