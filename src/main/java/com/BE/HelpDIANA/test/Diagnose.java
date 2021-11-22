@@ -35,9 +35,6 @@ public class Diagnose {
     @Column(nullable = true)
     private String diagnose_bf;
 
-    @Column(nullable = true)
-    private String diagnose_af;
-
     @Column(columnDefinition = "boolean default false")
     private boolean request;
 
@@ -52,21 +49,6 @@ public class Diagnose {
         this.request = request;
     }
 
-    public String getDiagnose_bf() {
-        return diagnose_bf;
-    }
-
-    public void setDiagnose_bf(String diagnose_bf) {
-        this.diagnose_bf = diagnose_bf;
-    }
-
-    public String getDiagnose_af() {
-        return diagnose_af;
-    }
-
-    public void setDiagnose_af(String diagnose_af) {
-        this.diagnose_af = diagnose_af;
-    }
 
     @Transient
     private List<Image> img = new ArrayList();

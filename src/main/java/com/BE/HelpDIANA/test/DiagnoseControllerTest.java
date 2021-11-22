@@ -296,5 +296,74 @@ public class DiagnoseControllerTest {
         diagnoseRepository.save(diagnose);
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
+
+
+
+
+    //Test thread
+    //진단서 생성 (사진, 이름, 날짜 입력 --> ocr 처리만.)
+    @PostMapping({"/test/ocr"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity testOcr(@RequestPart(value="files", required=false) List<MultipartFile> files,
+                                 String name, String date) throws Exception {
+
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
+        // 파일 처리를 위한 Diagnose 객체 생성
+        Diagnose diagnose = new Diagnose(tokenOwner, name, Date.valueOf(date));
+        diagnose.setFilePath(tokenOwner);
+        diagnoseRepository.save(diagnose);
+
+        // 파일 없는 진단서 생성 했을경우
+        if(files==null||files.isEmpty()){
+            diagnose.setImg(null);
+            System.out.println("파일 없음.");
+            return new ResponseEntity(diagnose, HttpStatus.OK);
+        }
+        // 파일이 존재할 때에만 처리
+        else {
+            System.out.println("파일 존재함");
+            List<Image> ImageList = imageHandler.parseFileInfo(diagnose, files); //image를 local에 저장하는 함수 호출
+            List<List> bf = new ArrayList<>();
+            for (Image photo : ImageList) {
+                // 파일을 DB에 저장
+                diagnose.addImage(imageRepository.save(photo));
+            }
+            System.out.println("파일 폴더, DB 저장 완료");
+            TranslateService.ocrPythonExe(diagnose.getFilePath()); // ocr 하는 함수 실행.
+            TranslateService.ocrToEngPythonExe(diagnose.getFilePath());
+        }
+        TranslateService.EngToKorPythonExe(diagnose.getFilePath());
+
+
+        return new ResponseEntity(diagnose, HttpStatus.OK);
+    }
+
+
+
+    @GetMapping(value = "/test/trans")
+    public ResponseEntity ocrTest(Long diagnose_id) throws Exception {
+
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
+
+        Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        if(resultDiagnose.isEmpty()){
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        }
+        Diagnose diagnose = resultDiagnose.get();
+
+        if(!diagnose.getEmail().equals(tokenOwner)){
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
+        }
+
+        //diagnose_bf json 파일을 읽어 translate
+        TranslateService.translatePythonExe(diagnose.getFilePath());
+        diagnoseRepository.save(diagnose);
+        return new ResponseEntity(diagnose, HttpStatus.OK);
+    }
+
 }
 

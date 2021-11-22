@@ -26,6 +26,68 @@ public class TranslateService extends Thread {
         }
     }
 
+    public static void ocrToEngPythonExe(String path){
+        Cmd cmd = new Cmd();
+        try {
+            System.out.println(path);
+            Thread.sleep(100);
+            String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/trans_to_eng_v5.py"+" "+path+" "+"ocr_total.json");
+            Thread.sleep(1000);
+            String result = cmd.execCommand(commmand);
+            System.out.println(result);
+            System.out.println("done");
+        } catch (Exception e) {
+            System.out.println("error");
+        }
+    }
+    public static void EngToKorPythonExe(String path) throws Exception{
+
+        Cmd cmd = new Cmd();
+        Cmd cmd1 = new Cmd();
+
+        Runnable task = new Runnable() {
+            public void run() {
+                String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/trans_to_ko_v5.py"+" "+path+" "+"eng_trans_ocr_total.json");
+                String result = cmd.execCommand(commmand);
+                System.out.println("done 1 "+result);
+            }
+        };
+
+        Runnable task1 = new Runnable() {
+            @Override
+            public void run() {
+                String commmand1 = cmd1.inputCommand("ls"); //여기다가 py 돌리면됨.
+                String result1 = cmd1.execCommand(commmand1);
+                System.out.println("done 2 "+result1);
+            }
+        };
+        Thread subTread1 = new Thread(task);
+        Thread subTread2 = new Thread(task1);
+        subTread1.start();
+        subTread2.start();
+
+        /*try {
+            System.out.println(path);
+            Thread.sleep(100);
+            String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/trans_to_ko_v5.py"+" "+path+" "+"eng_trans_ocr_total.json");
+
+            Thread.sleep(1000);
+
+            String commmand1 = cmd1.inputCommand("ls"); //여기다가 py 돌리면됨.
+            Thread.sleep(1000);
+
+            String result = cmd.execCommand(commmand);
+            String result1 = cmd1.execCommand(commmand1);
+
+
+            System.out.println(result);
+            System.out.println(result1);
+            System.out.println("done");
+        } catch (Exception e) {
+            System.out.println("error");
+        }*/
+    }
+
     public static void translatePythonExe(String path){
         Cmd cmd = new Cmd();
         try {
