@@ -1,3 +1,4 @@
+/*
 package com.BE.HelpDIANA.test;
 
 import com.BE.HelpDIANA.config.JwtTokenUtil;
@@ -211,10 +212,12 @@ public class DiagnoseController {
             System.out.println("exsit");
             return new ResponseEntity(map, HttpStatus.OK);
 
-            /*for (int i=0;i<ocrDiagnose.getImg().size();i++){
+            */
+/*for (int i=0;i<ocrDiagnose.getImg().size();i++){
                 listA.addAll(ocrDiagnose.getImg().get(i).getTranslate_af());
                 listB.addAll(ocrDiagnose.getImg().get(i).getTranslate_bf());
-            }*/
+            }*//*
+
         }
         Map<String, String> map = new HashMap<String, String>();
         map.put("translate_af", listA);
@@ -232,3 +235,4 @@ public class DiagnoseController {
     }
 }
 
+*/

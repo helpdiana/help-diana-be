@@ -33,7 +33,23 @@ public class Diagnose {
     private java.sql.Date date;
 
     @Column(nullable = true)
-    private String diagnose_bf;
+    private String report;
+
+    public String getReport() {
+        return report;
+    }
+
+    public void setReport(String report) {
+        this.report = report;
+    }
+
+    public String getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(String doctor) {
+        this.doctor = doctor;
+    }
 
     @Column(columnDefinition = "boolean default false")
     private boolean request;
