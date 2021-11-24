@@ -61,7 +61,8 @@ public class DiagnoseControllerTest {
             System.out.println("파일 폴더, DB 저장 완료");
             TranslateService.ocrPythonExe(diagnose.getFilePath()); // ocr 하는 함수 실행.
         }
-        TranslateService.translatePythonExe(diagnose.getFilePath());
+        TranslateService.ocrToEngPythonExe(diagnose.getFilePath());
+        TranslateService.EngToKorPythonExe(diagnose.getFilePath());
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
 
@@ -127,8 +128,9 @@ public class DiagnoseControllerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //diagnose_bf json 파일을 읽어 translate
-        TranslateService.translatePythonExe(diagnose.getFilePath());
+
+        TranslateService.ocrToEngPythonExe(diagnose.getFilePath());
+        TranslateService.EngToKorPythonExe(diagnose.getFilePath());
         diagnoseRepository.save(diagnose);
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }

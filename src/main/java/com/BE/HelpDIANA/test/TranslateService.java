@@ -43,6 +43,26 @@ public class TranslateService extends Thread {
     public static void EngToKorPythonExe(String path) throws Exception{
 
         Cmd cmd = new Cmd();
+
+        try {
+            System.out.println(path);
+            Thread.sleep(100);
+            String commmand = cmd.inputCommand("python3 /Users/kimbokyeong/Desktop/develop/trans_to_ko_v5.py"+" "+path+" "+"eng_trans_ocr_total.json");
+            Thread.sleep(1000);
+
+            String result = cmd.execCommand(commmand);
+
+            System.out.println(result);
+            System.out.println("done");
+        } catch (Exception e) {
+            System.out.println("error");
+        }
+    }
+
+    //thread 두개 쓸 경우를 위한 test
+    public static void EngToKorPythonExeTest(String path) throws Exception{
+
+        Cmd cmd = new Cmd();
         Cmd cmd1 = new Cmd();
 
         Runnable task = new Runnable() {
