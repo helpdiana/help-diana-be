@@ -98,6 +98,38 @@ public class DiagnoseControllerTest {
             return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
     }
+    @GetMapping(value = "/eng")
+    public ResponseEntity engDiagnose(Long diagnose_id){
+
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
+
+        Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        if(resultDiagnose.isEmpty()){
+            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        }
+        Diagnose diagnose = resultDiagnose.get();
+
+        if(diagnose.getEmail().equals(tokenOwner)){
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject1 = null;
+            try {
+
+                Object obj1 = parser.parse(new FileReader(diagnose.getFilePath()+"/eng_trans_ocr_total.json"));
+                jsonObject1 = (JSONObject) obj1;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return new ResponseEntity(jsonObject1, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
+        }
+    }
 
     //ocr update
     @PutMapping(value = "/ocr/update")

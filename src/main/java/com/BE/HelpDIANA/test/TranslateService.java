@@ -59,6 +59,11 @@ public class TranslateService extends Thread {
         }
     }
 
+
+
+
+    //////////////////안씀
+
     //thread 두개 쓸 경우를 위한 test
     public static void EngToKorPythonExeTest(String path) throws Exception{
 
