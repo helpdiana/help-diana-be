@@ -21,6 +21,48 @@ public class User implements UserDetails {
     @Column(columnDefinition = "boolean default false")
     private boolean doctor;
 
+    @Column(nullable = true)
+    private String urlImage;
+
+    @Column(nullable = true)
+    private String hospital;
+
+    @Column(nullable = true)
+    private String profile;
+
+    public User(String tokenOwner, String name, boolean doctor,String urlImage, String hospital, String profile) {
+        this.email = tokenOwner;
+        this.name = name;
+        this.doctor = doctor;
+        this.urlImage = urlImage;
+        this.hospital = hospital;
+        this.profile = profile;
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
+    }
+
+    public String getHospital() {
+        return hospital;
+    }
+
+    public void setHospital(String hospital) {
+        this.hospital = hospital;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
     public User(){}
 
     public User(String email, String name, boolean doctor) {

@@ -16,5 +16,9 @@ public interface DiagnoseRepository extends JpaRepository<Diagnose, Long> {
 
     List<Diagnose> findByEmailAndDate(String email, Date date);
 
+    List<Diagnose> findByRequestTrue();
+
+    List<Diagnose> findByDoctor(String doctor);
+
 }
 

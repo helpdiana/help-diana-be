@@ -232,6 +232,19 @@ public class ReserveController {
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
         String tokenOwner = "email";
 
+        Optional<Memo> memoOne = Optional.ofNullable(memoRepository.findByEmailAndDate(tokenOwner, Date.valueOf(date)));
+
+        if (memoOne.isPresent()) {
+            Memo newMemo = memoOne.get();
+
+            newMemo.setMemo(memo);
+            newMemo.setDate(Date.valueOf(date));
+
+            memoRepository.save(newMemo);
+
+            return new ResponseEntity<Memo>(newMemo, HttpStatus.OK);
+        }
+
         Memo newMemo = new Memo();
 
         newMemo.setEmail(tokenOwner);
@@ -264,13 +277,13 @@ public class ReserveController {
         return new ResponseEntity(newMemo, HttpStatus.OK);
     }
     @PutMapping(value = "/update/memo")
-    public ResponseEntity updateMemo(Long id, String memo, String date) {
+    public ResponseEntity updateMemo(String memo, String date) {
 
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
         String tokenOwner = "email";
 
-        Optional<Memo> memoOne = memoRepository.findById(id);
+        Optional<Memo> memoOne = Optional.ofNullable(memoRepository.findByEmailAndDate(tokenOwner, Date.valueOf(date)));
 
         if (!memoOne.isPresent()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

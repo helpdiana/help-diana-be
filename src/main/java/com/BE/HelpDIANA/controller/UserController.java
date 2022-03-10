@@ -63,17 +63,19 @@ public class UserController {
     }
 
     @PutMapping(value="/update")
-    public ResponseEntity<User> updateInfo(String email, String name, boolean doctor) {
+    public ResponseEntity<User> updateInfo(String name, boolean doctor, String urlImage, String hospital, String profile) {
 
         //token = token.substring(7);
         //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
         String tokenOwner = "email";
+        User user;
 
-        if (!(tokenOwner.equals(email))) {
-            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
-        }
+        if(doctor==true)
+            user = new User(tokenOwner, name, doctor ,urlImage, hospital,profile);
 
-        User user = new User(tokenOwner, name, doctor);
+        else
+            user = new User(tokenOwner, name, doctor);
+
         System.out.println(doctor);
 
         User updateUser = jpaUserService.update(tokenOwner, user);

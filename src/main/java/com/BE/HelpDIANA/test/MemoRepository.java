@@ -12,6 +12,6 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
 
     public List<Memo> findByEmail(String email);
 
-    public List<Memo> findByEmailAndDate(String email, Date date);
+    public Memo findByEmailAndDate(String email, Date date);
 
 }

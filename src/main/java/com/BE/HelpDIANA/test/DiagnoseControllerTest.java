@@ -282,7 +282,7 @@ public class DiagnoseControllerTest {
 
         Diagnose diagnose = resultDiagnose.get();
 
-        if(!diagnose.getEmail().equals(tokenOwner)){
+        if(!diagnose.getEmail().equals(tokenOwner)&!!diagnose.getDoctor().equals(tokenOwner)){
             return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
 
@@ -295,7 +295,7 @@ public class DiagnoseControllerTest {
             Object obj1 = parser.parse(new FileReader(diagnose.getFilePath()+"/ocr_total.json"));
             jsonObject_ocr = (JSONObject) obj1;
 
-            Object obj2 = parser.parse(new FileReader(diagnose.getFilePath()+"/trans_ocr_total.json"));
+            Object obj2 = parser.parse(new FileReader(diagnose.getFilePath()+"/ko_trans_eng_trans_ocr_total.json"));
             jsonObject_trans = (JSONObject) obj2;
 
             total.add(jsonObject_ocr);
@@ -308,6 +308,7 @@ public class DiagnoseControllerTest {
         return new ResponseEntity(total ,HttpStatus.OK);
     }
 
+    //진단서 의사에게 요청
     @PostMapping(value = "/request")
     public ResponseEntity diagnose_request(Long diagnose_id){
 
@@ -331,6 +332,63 @@ public class DiagnoseControllerTest {
         return new ResponseEntity(diagnose, HttpStatus.OK);
     }
 
+    //report page string 저장
+    @PostMapping({"/report"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity reportPost(Long diagnose_id, String report){
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+        String tokenOwner = "email";
+
+        Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+        if(resultDiagnose.isEmpty())
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+
+        Diagnose diagnose = resultDiagnose.get();
+
+        if(!diagnose.getEmail().equals(tokenOwner)){
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
+        }
+
+        diagnose.setReport(report);
+
+        diagnoseRepository.save(diagnose);
+        return new ResponseEntity(diagnose, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/opinion")
+    public ResponseEntity opinion(Long diagnose_id){
+        //token = token.substring(7);
+        //String tokenOwner = jwtTokenUtil.getUsernameFromToken(token);
+
+        String tokenOwner = "email";
+
+        Optional<Diagnose> resultDiagnose = diagnoseRepository.findById(diagnose_id);
+
+        if(resultDiagnose.isEmpty())
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+
+        Diagnose diagnose = resultDiagnose.get();
+
+        if(!diagnose.getEmail().equals(tokenOwner)){
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
+        }
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject1 = null;
+        try {
+            Object obj1 = parser.parse(new FileReader(diagnose.getFilePath()+"/doctor.json"));
+            jsonObject1 = (JSONObject) obj1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(jsonObject1==null)
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity(jsonObject1, HttpStatus.OK);
+
+    }
 
 
 

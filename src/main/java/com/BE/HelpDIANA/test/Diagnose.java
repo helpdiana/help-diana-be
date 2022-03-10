@@ -35,6 +35,9 @@ public class Diagnose {
     @Column(nullable = true)
     private String report;
 
+    @Column(nullable = true)
+    private String doctor;
+
     public String getReport() {
         return report;
     }
@@ -54,8 +57,7 @@ public class Diagnose {
     @Column(columnDefinition = "boolean default false")
     private boolean request;
 
-    @Column(nullable = true)
-    private String doctor;
+
 
     public boolean isRequest() {
         return request;
